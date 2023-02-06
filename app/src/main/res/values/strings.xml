@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">School</string>
+    <string name="title_activity_registration">RegistrationActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_profile_settings">ProfileSettingsActivity</string>
+    <string name="title_activity_application_send">ApplicationSendActivity</string>
+</resources>
