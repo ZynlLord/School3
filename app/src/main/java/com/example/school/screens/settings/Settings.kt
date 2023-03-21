@@ -16,9 +16,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.school.graphs.BottomBarScreen
-import com.example.school.model.MainViewModel
-import com.example.school.model.MainViewModelFactory
+import com.example.school.navigation.BottomBarScreen
+import com.example.school.viewmodel.MainViewModel
+import com.example.school.viewmodel.MainViewModelFactory
 
 @Composable
 fun SettingsScreen(
@@ -43,6 +43,9 @@ fun SettingsScreen(
                 fontWeight = FontWeight.Bold,
                 color = Color.Blue
             )
+            Button(onClick = { navController.navigate(BottomBarScreen.Registration.route) }) {
+                Text(text = "Регистрация")
+            }
         }
     }
 }
@@ -58,7 +61,7 @@ fun TopSettingsBar(
         },
         navigationIcon = {
             IconButton(onClick = {
-                navController.navigate(route = BottomBarScreen.Home.route)
+                navController.navigate(route = BottomBarScreen.Profile.route)
 
             }) {
                 Icon(

@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,26 +22,25 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import com.example.school.R
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.school.graphs.BottomBarScreen
-import com.example.school.model.MainViewModel
-import com.example.school.model.MainViewModelFactory
-import com.example.school.ui.theme.DeepBlue
-import com.example.school.ui.theme.DeepPurple
-import com.example.school.ui.theme.SchoolTheme
+import com.example.school.navigation.BottomBarScreen
+import com.example.school.ui.theme.*
+import com.example.school.viewmodel.MainViewModel
+import com.example.school.viewmodel.MainViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-
 
 
 @Composable
@@ -49,52 +49,30 @@ fun ProfileScreen(
     viewModel: MainViewModel
 ) {
     val context = LocalContext.current
-    val mViewModel: MainViewModel = viewModel(factory = MainViewModelFactory(context.applicationContext as Application))
+    val mViewModel: MainViewModel =
+        viewModel(factory = MainViewModelFactory(context.applicationContext as Application))
     SchoolTheme() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(DeepBlue),
+                .background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TopAppBarProfile(context = LocalContext.current.applicationContext,
-            navController = navController)
-
+            Spacer(modifier = Modifier.height(30.dp))
             ProfileEcommerce(navController = navController)
         }
     }
 }
 
 
-
 private val optionsList: ArrayList<OptionsData> = ArrayList()
 
-@Composable
-fun TopAppBarProfile(
-    context: Context,
-    navController: NavController
-    )
-{
-    val contextForToast = LocalContext.current.applicationContext
-    TopAppBar(
-        title = {
-            Text(text = "Профиль")
-        },
-        navigationIcon = {
-            IconButton(onClick = {
-                    navController.navigate(route = BottomBarScreen.Home.route)
-            }) {
-                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back From Profile Icon")
-            }
-        },
-        backgroundColor = Color.White
-    )
-}
 
 @Composable
-fun ProfileEcommerce(context: Context = LocalContext.current.applicationContext,
-navController: NavController
-                     ) {
+fun ProfileEcommerce(
+    context: Context = LocalContext.current.applicationContext,
+    navController: NavController
+) {
 
     // This indicates if the optionsList has data or not
     // Initially, the list is empty. So, its value is false.
@@ -115,7 +93,10 @@ navController: NavController
                 .fillMaxSize()
         ) {
             item {
-                UserDetails(context = context)
+                UserDetails(context = context, navController = navController)
+            }
+            item {
+                UserInfo()
             }
             items(optionsList) { item ->
                 OptionsItemStyle(item = item, context = context, navController = navController)
@@ -125,26 +106,114 @@ navController: NavController
     }
 }
 
+@Preview
 @Composable
-private fun UserDetails(context: Context = LocalContext.current.applicationContext) {
+fun UserInfo() {
+    val completedapplcications: Int = 0
+    val role: String = "Мастер"
+    val department: String = "Айти"
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .background(DeepPurple),
+            .background(Color.White)
+            .padding(all = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Column(
+            modifier = Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "$completedapplcications",
+                style = TextStyle(
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 25.sp
+                )
+            )
+            Text(
+                text = "Заявок",
+                style = TextStyle(
+                    color = Color.Black,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp
+                )
+            )
+        }
+        Spacer(modifier = Modifier.width(50.dp))
+        Column(
+            modifier = Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "$role", style = TextStyle(
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 25.sp
+                )
+            )
+            Text(
+                text = "Роль", style = TextStyle(
+                    color = Color.Black,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp
+                )
+            )
+        }
+        Spacer(modifier = Modifier.width(50.dp))
+        Column(
+            modifier = Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "$department", style = TextStyle(
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 25.sp
+                )
+            )
+            Text(
+                text = "Отдел",
+                style = TextStyle(
+                    color = Color.Black,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun UserDetails(
+    context: Context = LocalContext.current.applicationContext,
+    navController: NavController
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
 
-    ) {
-
+        ) {
         // User's image
-        Image(
-            modifier = Modifier
-                .size(72.dp)
-                .clip(shape = CircleShape),
-            painter = painterResource(id = R.drawable.ic_compose),
-            contentDescription = "Profile Image"
-        )
+        IconButton(onClick = {
 
+        }) {
+            Image(
+                painterResource(id = R.drawable.unavatar),
+                contentDescription = "NONE",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(85.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, LightRed, CircleShape)
+            )
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -188,13 +257,13 @@ private fun UserDetails(context: Context = LocalContext.current.applicationConte
                 modifier = Modifier
                     .weight(weight = 1f, fill = false),
                 onClick = {
-                    Toast.makeText(context, "Edit Button", Toast.LENGTH_SHORT).show()
+                    navController.navigate(BottomBarScreen.ProfileSettings.route)
                 }) {
                 Icon(
                     modifier = Modifier.size(24.dp),
                     imageVector = Icons.Outlined.Edit,
                     contentDescription = "Edit Details",
-                    tint = MaterialTheme.colors.primary
+                    tint = LightRed
                 )
             }
 
@@ -243,7 +312,7 @@ private fun OptionsItemStyle(
                     style = TextStyle(
                         fontSize = 18.sp,
                         fontFamily = FontFamily.Default,
-                        color = Color.White
+                        color = Color.Black
                     )
                 )
                 Spacer(modifier = Modifier.height(2.dp))
@@ -277,7 +346,7 @@ private fun prepareOptionsData() {
     optionsList.add(
         OptionsData(
             icon = appIcons.Person,
-            route = "account",
+            route = "accountsettings",
             title = "Аккаунт",
             subTitle = "Смена пароля, должности..."
         )
@@ -293,7 +362,7 @@ private fun prepareOptionsData() {
     optionsList.add(
         OptionsData(
             icon = appIcons.Notifications,
-            route = "notifications",
+            route = "notificationsettings",
             title = "Уведомления",
             subTitle = "Настройки уведомлений"
         )
@@ -306,6 +375,6 @@ data class OptionsData(
     val title: String,
     val subTitle: String,
     val route: String,
-    )
+)
 
 

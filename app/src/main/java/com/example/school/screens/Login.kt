@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.school.R
-import com.example.school.model.MainViewModel
-import com.example.school.model.MainViewModelFactory
+import com.example.school.viewmodel.MainViewModel
+import com.example.school.viewmodel.MainViewModelFactory
 import com.example.school.ui.theme.DeepBlue
 import com.example.school.ui.theme.DeepPurple
 import com.example.school.ui.theme.SchoolTheme

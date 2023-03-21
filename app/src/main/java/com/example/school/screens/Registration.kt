@@ -3,6 +3,7 @@ package com.example.school.screens
 import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -10,7 +11,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,15 +20,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.school.R
-import com.example.school.graphs.BottomBarScreen
-import com.example.school.model.MainViewModel
-import com.example.school.model.MainViewModelFactory
+import com.example.school.navigation.BottomBarScreen
+import com.example.school.viewmodel.MainViewModel
+import com.example.school.viewmodel.MainViewModelFactory
 import com.example.school.ui.theme.DeepBlue
 import com.example.school.ui.theme.SchoolTheme
 import com.example.school.ui.theme.Shapes
@@ -38,6 +37,11 @@ fun RegistrationScreen(
     navController: NavController,
     viewModel: MainViewModel
 ) {
+
+    var userlogin by remember { mutableStateOf("") }
+    var userpassword by remember { mutableStateOf("") }
+    var isbuttonenabled by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
     val mViewModel: MainViewModel =
         viewModel(factory = MainViewModelFactory(context.applicationContext as Application))
@@ -63,11 +67,11 @@ fun RegistrationScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                var mailtext by remember { mutableStateOf("") }
                 OutlinedTextField(
-                    value = mailtext,
-                    onValueChange = { newmailtext ->
-                        mailtext = newmailtext
+                    value = userlogin,
+                    onValueChange = {
+                        userlogin = it
+                        isbuttonenabled = userlogin.isNotEmpty() && userpassword.isNotEmpty()
                     },
                     label = {
                         Text(
@@ -76,9 +80,8 @@ fun RegistrationScreen(
                             fontSize = 17.sp
                         )
                     },
-                    placeholder = {
-                        Text(text = "Enter E-mail...")
-                    },
+                    isError = userlogin.isEmpty(),
+                    placeholder = { Text(text = "Enter E-mail...") },
                     leadingIcon = {
                         IconButton(onClick = { /*TODO*/ }) {
                             Icon(
@@ -94,9 +97,7 @@ fun RegistrationScreen(
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onNext = {
-
-                        }
+                        onNext = {}
                     ),
                 )
             }
@@ -105,7 +106,6 @@ fun RegistrationScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                var password by rememberSaveable { mutableStateOf("") }
                 var passwordVisibility by remember { mutableStateOf(false) }
                 val icon = if (passwordVisibility) {
                     painterResource(id = R.drawable.design_ic_visibility)
@@ -113,13 +113,15 @@ fun RegistrationScreen(
                     painterResource(id = R.drawable.design_visibility_off)
                 }
                 OutlinedTextField(
-                    value = password,
+                    value = userpassword,
                     onValueChange = {
-                        password = it
+                        userpassword = it
+                        isbuttonenabled = userlogin.isNotEmpty() && userpassword.isNotEmpty()
                     },
                     placeholder = {
                         Text(text = "Enter password...")
                     },
+                    isError = userpassword.isEmpty(),
                     label = {
                         Text(
                             text = "Password",
@@ -142,7 +144,6 @@ fun RegistrationScreen(
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password
                     )
-
                 )
             }
             Row {
@@ -165,12 +166,29 @@ fun RegistrationScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                 ) {
-                    Button(onClick = {
-                        navController.navigate(BottomBarScreen.Home.route)
-                    }) {
-                        Text(text = "Зарегистрироваться")
+                    Button(
+                        onClick = {
+                            navController.navigate(BottomBarScreen.SignUp.route)
+                        },
+                        enabled = isbuttonenabled
+                    ) {
+                        Text(text = "Продолжить")
                     }
                 }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    onClick = {
+                        navController.navigate(BottomBarScreen.SignUp.route)
+                    }) {
+                        Text(text = "Войти", Modifier.clickable {
+                            navController.navigate(BottomBarScreen.Login.route)
+                        })
+                    }
             }
         }
     }
